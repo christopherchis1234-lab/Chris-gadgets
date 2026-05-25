@@ -37,9 +37,65 @@
         const WHATSAPP_NUMBER = 2347066343002; 
 
         // Fetch data from the Google Sheet when the page loads
-        async function fetchInventory() {
+        async function async function fetchInventory() {
+    try {
+        if (SHEET_CSV_URL.includes("PASTE_YOUR_COPIED_GOOGLE_SHEET")) {
+            document.getElementById('product-grid').innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration error: Please add your sheet link.</p>";
+            return;
+        }
+
+        const response = await fetch(SHEET_CSV_URL);
+        const csvText = await response.text();
+        
+        // This splits rows safely even if Google Sheets uses different line breaks
+        const rows = csvText.split(/\r?\n/).map(row => row.split(','));
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML = ''; // Clear loading text
+
+        // Loop through rows (skipping row 0 which is the header)
+        for (let i = 1; i < rows.length; i++) {
+            const [name, price, image] = rows[i];
+            
+            // Clean up text and skip empty entries
+            if (!name || !price || name.trim() === "") continue;
+
+            const cleanName = name.trim();
+            const cleanPrice = price.trim();
+            const cleanImage = image ? image.trim() : "";
+
+            // Determine image placeholder or link
+            const imageHtml = (cleanImage !== "") 
+                ? `<img src="${cleanImage}" class="product-img" alt="${cleanName}">`
+                : `<div class="product-img">${cleanName} Image Placeholder</div>`;
+
+            // Generate product card HTML dynamically
+            const cardHtml = `
+                <div class="card">
+                    ${imageHtml}
+                    <div class="card-details">
+                        <h3>${cleanName}</h3>
+                        <p class="price">${cleanPrice}</p>
+                        <button class="btn-order" onclick="sendOrder('${cleanName.replace(/'/g, "\\'")}', '${cleanPrice.replace(/'/g, "\\'")}')">
+                            Order via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += cardHtml;
+        }
+
+        // Quick alert if the sheet is completely empty
+        if (grid.innerHTML === '') {
+            grid.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>No products found in your sheet. Add items below row 1!</p>";
+        }
+
+    } catch (error) {
+        console.error("Error loading products:", error);
+        document.getElementById('product-grid').innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Failed to load inventory. Please try refreshing.</p>";
+    }
+} {
             try {
-                if (SHEET_CSV_URL.includes("PASTE_YOUR_COPIED_GOOGLE_SHEET")) {
+                if (SHEET_CSV_URL.includes(https://docs.google.com/spreadsheets/d/e/2PACX-1vQCSe1k2EaumN_Xr_fKvLRme8Joi6qrk75_uPzLKxAbm0eu03VHggIfE9iVfOUN8mhLDSccYILWh43k/pub?gid=0&single=true&output=csv)) {
                     document.getElementById('product-grid').innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration error: Please add your sheet link.</p>";
                     return;
                 }
