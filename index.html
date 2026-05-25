@@ -20,28 +20,8 @@
     <main class="container">
         <h2 class="section-title">Latest Arrivals</h2>
         
-        <div class="grid">
-            <div class="card">
-                <div class="product-img">Smartphone Image Placeholder</div>
-                <div class="card-details">
-                    <h3>Premium Smartphone (128GB)</h3>
-                    <p class="price">$799</p>
-                    <button class="btn-order" onclick="sendOrder('Premium Smartphone (128GB)', '$799')">
-                        Order via WhatsApp
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="product-img">Laptop Image Placeholder</div>
-                <div class="card-details">
-                    <h3>Pro Edition Laptop (16GB RAM)</h3>
-                    <p class="price">$1,200</p>
-                    <button class="btn-order" onclick="sendOrder('Pro Edition Laptop (16GB RAM)', '$1,200')">
-                        Order via WhatsApp
-                    </button>
-                </div>
-            </div>
+        <div class="grid" id="product-grid">
+            <p style="text-align: center; grid-column: 1/-1;">Loading latest gadgets...</p>
         </div>
     </main>
 
@@ -50,18 +30,72 @@
     </footer>
 
     <script>
+        // 1. PASTE YOUR GOOGLE SHEET CSV URL HERE
+        const SHEET_CSV_URL = https://docs.google.com/spreadsheets/d/e/2PACX-1vQCSe1k2EaumN_Xr_fKvLRme8Joi6qrk75_uPzLKxAbm0eu03VHggIfE9iVfOUN8mhLDSccYILWh43k/pub?gid=0&single=true&output=csv;
+        
+        // 2. CONFIGURE YOUR BUSINESS WHATSAPP NUMBER HERE (Digits only, include country code)
+        const WHATSAPP_NUMBER = 2347066343002; 
+
+        // Fetch data from the Google Sheet when the page loads
+        async function fetchInventory() {
+            try {
+                if (SHEET_CSV_URL.includes("PASTE_YOUR_COPIED_GOOGLE_SHEET")) {
+                    document.getElementById('product-grid').innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration error: Please add your sheet link.</p>";
+                    return;
+                }
+
+                const response = await fetch(SHEET_CSV_URL);
+                const csvText = await response.text();
+                
+                // Parse CSV text into arrays
+                const rows = csvText.split('\n').map(row => row.split(','));
+                const grid = document.getElementById('product-grid');
+                grid.innerHTML = ''; // Clear loading text
+
+                // Loop through rows (skipping the header row 0)
+                for (let i = 1; i < rows.length; i++) {
+                    const [name, price, image] = rows[i];
+                    
+                    // Skip empty rows
+                    if (!name || !price) continue;
+
+                    // Determine image placeholder or link
+                    const imageHtml = (image && image.trim() !== "") 
+                        ? `<img src="${image.trim()}" class="product-img" alt="${name}">`
+                        : `<div class="product-img">${name} Image Placeholder</div>`;
+
+                    // Generate product card HTML dynamically
+                    const cardHtml = `
+                        <div class="card">
+                            ${imageHtml}
+                            <div class="card-details">
+                                <h3>${name}</h3>
+                                <p class="price">${price}</p>
+                                <button class="btn-order" onclick="sendOrder('${name.replace(/'/g, "\\'")}', '${price.replace(/'/g, "\\'")}')">
+                                    Order via WhatsApp
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHtml;
+                }
+            } catch (error) {
+                console.error("Error loading products:", error);
+                document.getElementById('product-grid').innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Failed to load inventory. Please try refreshing.</p>";
+            }
+        }
+
         function sendOrder(productName, price) {
-            // Put your WhatsApp number here (digits only, include country code)
-            const phoneNumber = "YOUR_PHONE_NUMBER_HERE"; 
-            
-            if (phoneNumber === "YOUR_PHONE_NUMBER_HERE") {
-                alert("Please configure your WhatsApp phone number in the HTML script.");
+            if (WHATSAPP_NUMBER === "YOUR_PHONE_NUMBER_HERE") {
+                alert("Setup Error: Please configure your WhatsApp phone number in the script.");
                 return;
             }
-
             const message = `Hello Chris Gadgets, I want to order:\n\n🛍️ ${productName}\n💰 Price: ${price}`;
-            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         }
+
+        // Run the fetch function instantly
+        fetchInventory();
     </script>
 </body>
 </html>
