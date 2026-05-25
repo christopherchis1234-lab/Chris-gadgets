@@ -1,157 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris Gadgets | Premium Tech</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+html
+<script>
+    // 1. CONFIRM YOUR LINK AND NUMBER ARE SITTING DIRECTLY WITHIN THESE QUOTES
+    const SHEET_CSV_URL = "PASTE_YOUR_COPIED_GOOGLE_SHEET_CSV_URL_HERE";
+    const WHATSAPP_NUMBER = "YOUR_PHONE_NUMBER_HERE"; 
 
-    <header>
-        <h1>CHRIS <span>GADGETS</span></h1>
-    </header>
-
-    <section class="hero">
-        <h2>Upgrade Your Tech</h2>
-        <p>Top-tier smartphones, laptops, and accessories at the best prices.</p>
-    </section>
-
-    <main class="container">
-        <h2 class="section-title">Latest Arrivals</h2>
-        
-        <div class="grid" id="product-grid">
-            <p style="text-align: center; grid-column: 1/-1;">Loading latest gadgets...</p>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 CHRIS GADGETS. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // 1. PASTE YOUR GOOGLE SHEET CSV URL HERE
-        const SHEET_CSV_URL = https://docs.google.com/spreadsheets/d/e/2PACX-1vQCSe1k2EaumN_Xr_fKvLRme8Joi6qrk75_uPzLKxAbm0eu03VHggIfE9iVfOUN8mhLDSccYILWh43k/pub?gid=0&single=true&output=csv;
-        
-        // 2. CONFIGURE YOUR BUSINESS WHATSAPP NUMBER HERE (Digits only, include country code)
-        const WHATSAPP_NUMBER = 2347066343002; 
-
-        // Fetch data from the Google Sheet when the page loads
-        async function async function fetchInventory() {
-    try {
-        if (SHEET_CSV_URL.includes("PASTE_YOUR_COPIED_GOOGLE_SHEET")) {
-            document.getElementById('product-grid').innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration error: Please add your sheet link.</p>";
-            return;
-        }
-
-        const response = await fetch(SHEET_CSV_URL);
-        const csvText = await response.text();
-        
-        // This splits rows safely even if Google Sheets uses different line breaks
-        const rows = csvText.split(/\r?\n/).map(row => row.split(','));
+    async function fetchInventory() {
         const grid = document.getElementById('product-grid');
-        grid.innerHTML = ''; // Clear loading text
-
-        // Loop through rows (skipping row 0 which is the header)
-        for (let i = 1; i < rows.length; i++) {
-            const [name, price, image] = rows[i];
-            
-            // Clean up text and skip empty entries
-            if (!name || !price || name.trim() === "") continue;
-
-            const cleanName = name.trim();
-            const cleanPrice = price.trim();
-            const cleanImage = image ? image.trim() : "";
-
-            // Determine image placeholder or link
-            const imageHtml = (cleanImage !== "") 
-                ? `<img src="${cleanImage}" class="product-img" alt="${cleanName}">`
-                : `<div class="product-img">${cleanName} Image Placeholder</div>`;
-
-            // Generate product card HTML dynamically
-            const cardHtml = `
-                <div class="card">
-                    ${imageHtml}
-                    <div class="card-details">
-                        <h3>${cleanName}</h3>
-                        <p class="price">${cleanPrice}</p>
-                        <button class="btn-order" onclick="sendOrder('${cleanName.replace(/'/g, "\\'")}', '${cleanPrice.replace(/'/g, "\\'")}')">
-                            Order via WhatsApp
-                        </button>
-                    </div>
-                </div>
-            `;
-            grid.innerHTML += cardHtml;
-        }
-
-        // Quick alert if the sheet is completely empty
-        if (grid.innerHTML === '') {
-            grid.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>No products found in your sheet. Add items below row 1!</p>";
-        }
-
-    } catch (error) {
-        console.error("Error loading products:", error);
-        document.getElementById('product-grid').innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Failed to load inventory. Please try refreshing.</p>";
-    }
-} {
-            try {
-                if (SHEET_CSV_URL.includes(https://docs.google.com/spreadsheets/d/e/2PACX-1vQCSe1k2EaumN_Xr_fKvLRme8Joi6qrk75_uPzLKxAbm0eu03VHggIfE9iVfOUN8mhLDSccYILWh43k/pub?gid=0&single=true&output=csv)) {
-                    document.getElementById('product-grid').innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration error: Please add your sheet link.</p>";
-                    return;
-                }
-
-                const response = await fetch(SHEET_CSV_URL);
-                const csvText = await response.text();
-                
-                // Parse CSV text into arrays
-                const rows = csvText.split('\n').map(row => row.split(','));
-                const grid = document.getElementById('product-grid');
-                grid.innerHTML = ''; // Clear loading text
-
-                // Loop through rows (skipping the header row 0)
-                for (let i = 1; i < rows.length; i++) {
-                    const [name, price, image] = rows[i];
-                    
-                    // Skip empty rows
-                    if (!name || !price) continue;
-
-                    // Determine image placeholder or link
-                    const imageHtml = (image && image.trim() !== "") 
-                        ? `<img src="${image.trim()}" class="product-img" alt="${name}">`
-                        : `<div class="product-img">${name} Image Placeholder</div>`;
-
-                    // Generate product card HTML dynamically
-                    const cardHtml = `
-                        <div class="card">
-                            ${imageHtml}
-                            <div class="card-details">
-                                <h3>${name}</h3>
-                                <p class="price">${price}</p>
-                                <button class="btn-order" onclick="sendOrder('${name.replace(/'/g, "\\'")}', '${price.replace(/'/g, "\\'")}')">
-                                    Order via WhatsApp
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    grid.innerHTML += cardHtml;
-                }
-            } catch (error) {
-                console.error("Error loading products:", error);
-                document.getElementById('product-grid').innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Failed to load inventory. Please try refreshing.</p>";
-            }
-        }
-
-        function sendOrder(productName, price) {
-            if (WHATSAPP_NUMBER === "YOUR_PHONE_NUMBER_HERE") {
-                alert("Setup Error: Please configure your WhatsApp phone number in the script.");
+        
+        try {
+            // Guard clause if user forgot to change the placeholder link
+            if (SHEET_CSV_URL.includes("PASTE_YOUR_COPIED")) {
+                grid.innerHTML = "<p style='color:red; text-align:center; grid-column:1/-1;'>Configuration Error: Please paste your real Google Sheet link inside the code.</p>";
                 return;
             }
-            const message = `Hello Chris Gadgets, I want to order:\n\n🛍️ ${productName}\n💰 Price: ${price}`;
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
-        }
 
-        // Run the fetch function instantly
-        fetchInventory();
-    </script>
-</body>
-</html>
+            const response = await fetch(SHEET_CSV_URL);
+            if (!response.ok) throw new Error('Failed to reach Google Sheets');
+            
+            const rawData = await response.text();
+            
+            // Clean up invisible carriage returns (\r) across different operating systems
+            const cleanData = rawData.replace(/\r/g, "");
+            const lines = cleanData.split('\n');
+            
+            let htmlContent = '';
+            let validProductCount = 0;
+
+            // Loop starts at index 1 to completely ignore the Row 1 Header text
+            for (let i = 1; i < lines.length; i++) {
+                const currentLine = lines[i].trim();
+                if (currentLine === '') continue; // Skip completely empty lines
+
+                // Split by comma
+                const columns = currentLine.split(',');
+                
+                // Extract columns carefully
+                const name = columns[0] ? columns[0].trim() : '';
+                const price = columns[1] ? columns[1].trim() : '';
+                const image = columns[2] ? columns[2].trim() : '';
+
+                // Skip processing if name or price field is completely absent
+                if (!name || !price) continue;
+
+                validProductCount++;
+
+                // Build modern image block or handle clean text placeholder fallback
+                const imageHtml = (image !== '') 
+                    ? `<img src="${image}" class="product-img" alt="${name}">`
+                    : `<div class="product-img" style="background:#e8e8ed; height:220px; display:flex; align-items:center; justify-content:center; color:#86868b; text-align:center; padding:10px;">⚡ ${name} Placeholder</div>`;
+
+                // Append perfectly formatted HTML string
+                htmlContent += `
+                    <div class="card">
+                        ${imageHtml}
+                        <div class="card-details">
+                            <h3>${name}</h3>
+                            <p class="price" style="color:#0071e3; font-size:1.3rem; font-weight:bold; margin-bottom:15px;">${price}</p>
+                            <button class="btn-order" onclick="sendOrder('${name.replace(/'/g, "\\'")}', '${price.replace(/'/g, "\\'")}')">
+                                Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // UI feedback assessment
+            if (validProductCount === 0) {
+                grid.innerHTML = `<p style='text-align:center; grid-column:1/-1; padding:20px;'>Connected to Sheet! However, no valid items were found below row 1. Check your spelling.</p>`;
+            } else {
+                grid.innerHTML = htmlContent;
+            }
+
+        } catch (error) {
+            console.error(error);
+            grid.innerHTML = `<p style='text-align:center; color:#ff4d4d; grid-column:1/-1; padding:20px;'>⚠️ Connection Error: Website cannot fetch data. Please re-verify your 'Publish to Web' settings in Google Sheets.</p>`;
+        }
+    }
+
+    function sendOrder(productName, price) {
+        if (WHATSAPP_NUMBER.includes("YOUR_PHONE")) {
+            alert("Please input your real WhatsApp number into the code configuration line.");
+            return;
+        }
+        const message = `Hello Chris Gadgets, I want to order:\n\n🛍️ ${productName}\n💰 Price: ${price}`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // Fire off execution loop
+    fetchInventory();
+</script>
