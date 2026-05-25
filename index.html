@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Gadgets | Premium Tech</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>CHRIS <span>GADGETS</span></h1>
+    </header>
+
+    <section class="hero">
+        <h2>Upgrade Your Tech</h2>
+        <p>Top-tier smartphones, laptops, and accessories at the best prices.</p>
+    </section>
+
+    <main class="container">
+        <h2 class="section-title">Latest Arrivals</h2>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="product-img">Smartphone Image Placeholder</div>
+                <div class="card-details">
+                    <h3>Premium Smartphone (128GB)</h3>
+                    <p class="price">$799</p>
+                    <button class="btn-order" onclick="sendOrder('Premium Smartphone (128GB)', '$799')">
+                        Order via WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="product-img">Laptop Image Placeholder</div>
+                <div class="card-details">
+                    <h3>Pro Edition Laptop (16GB RAM)</h3>
+                    <p class="price">$1,200</p>
+                    <button class="btn-order" onclick="sendOrder('Pro Edition Laptop (16GB RAM)', '$1,200')">
+                        Order via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CHRIS GADGETS. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function sendOrder(productName, price) {
+            // Put your WhatsApp number here (digits only, include country code)
+            const phoneNumber = "YOUR_PHONE_NUMBER_HERE"; 
+            
+            if (phoneNumber === "YOUR_PHONE_NUMBER_HERE") {
+                alert("Please configure your WhatsApp phone number in the HTML script.");
+                return;
+            }
+
+            const message = `Hello Chris Gadgets, I want to order:\n\n🛍️ ${productName}\n💰 Price: ${price}`;
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
